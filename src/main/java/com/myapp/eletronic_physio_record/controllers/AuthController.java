@@ -12,8 +12,10 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.myapp.eletronic_physio_record.entities.User;
 import com.myapp.eletronic_physio_record.entities.dto.AuthenticationDTO;
+import com.myapp.eletronic_physio_record.entities.dto.LoginResponseDTO;
 import com.myapp.eletronic_physio_record.entities.dto.RegisterDTO;
 import com.myapp.eletronic_physio_record.repositories.UserRepository;
+import com.myapp.eletronic_physio_record.security.TokenService;
 
 @RestController
 @RequestMapping("/auth")
@@ -24,12 +26,16 @@ public class AuthController {
 	@Autowired
 	private UserRepository userRepository;
 	
+	@Autowired
+	private TokenService tokenService;
 	@PostMapping("/login")
 	public ResponseEntity<?> login(@RequestBody AuthenticationDTO data) {
 		var usernamePassword = new UsernamePasswordAuthenticationToken(data.email(), data.password());
 		var authentication = this.authenticationManager.authenticate(usernamePassword);
 		
-		return ResponseEntity.ok().build();
+		var token = tokenService.generateToken((User)authentication.getPrincipal());
+		
+		return ResponseEntity.ok(new LoginResponseDTO(token));
 	}
 	
 	@PostMapping("/register")
