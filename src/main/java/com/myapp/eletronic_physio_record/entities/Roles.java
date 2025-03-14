@@ -2,8 +2,8 @@ package com.myapp.eletronic_physio_record.entities;
 
 public enum Roles {
 
-	ADMIN("admin"),
-	PHYSIO("physio");
+	ADMIN("ADMIN"),
+	PHYSIO("PHYSIO");
 	
 	
 	private String role;

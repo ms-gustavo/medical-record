@@ -22,10 +22,12 @@ import lombok.Setter;
 
 @Entity
 @Table(name = "tb_users")
-@Getter @Setter
-@NoArgsConstructor @AllArgsConstructor
+@Getter
+@Setter
+@NoArgsConstructor
+@AllArgsConstructor
 public class User implements UserDetails {
-	
+
 	private static final long serialVersionUID = 1L;
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -37,25 +39,27 @@ public class User implements UserDetails {
 	@Enumerated(EnumType.STRING)
 	@Column(nullable = false)
 	private Roles role;
-	
+
+	public User() {
+
+	}
+
 	public User(String email, String password, Roles role) {
 		this.email = email;
 		this.password = password;
 		this.role = role;
 	}
-	
+
 	@Override
 	public Collection<? extends GrantedAuthority> getAuthorities() {
-		if(this.role == Roles.ADMIN) {
-			return List.of(new SimpleGrantedAuthority("ROLE_ADMIN"), new SimpleGrantedAuthority("ROLE_PHYSIO"));
-		} else {
-			return List.of(new SimpleGrantedAuthority("ROLE_PHYSIO"));
-		}
+		return List.of(new SimpleGrantedAuthority("ROLE_" + role.name()));
 	}
+
 	@Override
 	public String getPassword() {
 		return password;
 	}
+
 	@Override
 	public String getUsername() {
 		return email;
