@@ -12,6 +12,7 @@ import com.myapp.eletronic_physio_record.repositories.PatientRepository;
 import com.myapp.eletronic_physio_record.repositories.PhysioRepository;
 import com.myapp.eletronic_physio_record.security.TokenService;
 
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 
 @Service
@@ -25,6 +26,8 @@ public class PatientService {
 	@Autowired
 	private TokenService tokenService;
 
+	
+	@Transactional
 	public Patient createPatient(PatientDTO data, String token) {
 		String email = tokenService.validateToken(token);
 		Physio physio = (Physio) physioRepository.findByEmail(email);
@@ -38,8 +41,10 @@ public class PatientService {
 		patient.setAddress(data.address());
 
 		patient.getPhysios().add(physio);
-
-		return patientRepository.save(patient);
+		physio.addPatient(patient);
+		
+		Patient savedPatient = patientRepository.save(patient);		
+		return savedPatient;
 
 	}
 

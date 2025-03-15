@@ -3,6 +3,10 @@ package com.myapp.eletronic_physio_record.entities;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonIdentityInfo;
+import com.fasterxml.jackson.annotation.ObjectIdGenerators;
+
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -19,34 +23,38 @@ import lombok.Setter;
 
 @Entity
 @Table(name = "patient")
+@JsonIdentityInfo(generator = ObjectIdGenerators.PropertyGenerator.class, property = "id")
 @Getter
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
 public class Patient {
-    
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
-    
-    @Column(nullable = false)
-    private String name;
 
-    @Column(nullable = false)
-    private String birthDate;
+	@Id
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
+	private Long id;
 
-    @Column
-    private String phone;
+	@Column(nullable = false)
+	private String name;
 
-    @Column
-    private String address;
-    
-    @ManyToMany(mappedBy = "patients")
-    private List<Physio> physios = new ArrayList<>();
-    
-    @OneToMany(mappedBy = "patient", cascade = CascadeType.ALL)
-    private List<MedicalRecord> medicalRecords;
+	@Column(nullable = false)
+	private String birthDate;
 
+	@Column
+	private String phone;
+
+	@Column
+	private String address;
+	@ManyToMany(mappedBy = "patients")
+	private List<Physio> physios = new ArrayList<>();
+
+	@OneToMany(mappedBy = "patient", cascade = CascadeType.ALL)
+	private List<MedicalRecord> medicalRecords;
+
+	public Long getId() {
+		return id;
+	}
+	
 	public String getName() {
 		return name;
 	}
@@ -83,10 +91,6 @@ public class Patient {
 		return physios;
 	}
 
-	public void setPhysios(List<Physio> physios) {
-		this.physios = physios;
-	}
-
 	public List<MedicalRecord> getMedicalRecords() {
 		return medicalRecords;
 	}
@@ -94,7 +98,5 @@ public class Patient {
 	public void setMedicalRecords(List<MedicalRecord> medicalRecords) {
 		this.medicalRecords = medicalRecords;
 	}
-    
-    
-}
 
+}

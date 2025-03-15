@@ -1,8 +1,11 @@
 package com.myapp.eletronic_physio_record.entities;
 
+import java.util.ArrayList;
 import java.util.List;
 
+import com.fasterxml.jackson.annotation.JsonIdentityInfo;
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -19,38 +22,35 @@ import lombok.NoArgsConstructor;
 
 @Entity
 @Table(name = "physio")
-@NoArgsConstructor @AllArgsConstructor
+@JsonIdentityInfo(generator = ObjectIdGenerators.PropertyGenerator.class, property = "id")
+@NoArgsConstructor
+@AllArgsConstructor
 public class Physio {
 
 	@Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
+	private Long id;
 	@Column(nullable = false)
-    private String name;
+	private String name;
 	@Column(nullable = false)
 	private String speciality;
 	@Column(nullable = false, unique = true)
 	private String licenseNumber;
 	@Column(nullable = false, unique = true)
-    private String email;
-	
+	private String email;
+
 	@JsonIgnore
 	@OneToOne
 	@JoinColumn(name = "user_id", nullable = false)
 	private User user;
-	
 	@ManyToMany
-    @JoinTable(
-        name = "physio_patients",
-        joinColumns = @JoinColumn(name = "physio_id"),
-        inverseJoinColumns = @JoinColumn(name = "patient_id")
-    )
-    private List<Patient> patients;
-	
+	@JoinTable(name = "physio_patients", joinColumns = @JoinColumn(name = "physio_id"), inverseJoinColumns = @JoinColumn(name = "patient_id"))
+	private List<Patient> patients = new ArrayList<>();
+
 	public User getUser() {
 		return user;
 	}
-	
+
 	public Long getId() {
 		return id;
 	}
@@ -62,34 +62,42 @@ public class Physio {
 	public String getName() {
 		return name;
 	}
-	
+
 	public void setName(String name) {
 		this.name = name;
 	}
-	
+
 	public String getLicenseNumber() {
-	    return licenseNumber;
+		return licenseNumber;
 	}
 
 	public void setLicenseNumber(String licenseNumber) {
-	    this.licenseNumber = licenseNumber;
+		this.licenseNumber = licenseNumber;
 	}
-	
+
 	public String getEmail() {
-	    return email;
+		return email;
 	}
 
 	public void setEmail(String email) {
-	    this.email = email;
+		this.email = email;
 	}
-	
+
 	public String getSpeciality() {
-	    return speciality;
+		return speciality;
 	}
 
 	public void setSpeciality(String speciality) {
-	    this.speciality = speciality;
+		this.speciality = speciality;
 	}
-	
-	
+
+	public List<Patient> getPatients() {
+		return patients;
+	}
+
+	public void addPatient(Patient patient) {
+		this.patients.add(patient);
+		patient.getPhysios().add(this);
+	}
+
 }
