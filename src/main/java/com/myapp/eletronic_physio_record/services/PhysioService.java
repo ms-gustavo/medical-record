@@ -43,9 +43,16 @@ public class PhysioService {
 		Physio physio = new Physio();
 		physio.setName(data.name());
 		physio.setLicenseNumber(data.licenseNumber());
-		physio.setSpeciality(data.specialty());
+		physio.setSpeciality(data.speciality());
 		physio.setUser(user);
 		
 		return physioRepository.save(physio);
 	}
+	
+	   public Physio update(Long id, PhysioDTO data) {
+		   Physio physio = findById(id);	        
+	        physio.setLicenseNumber(data.licenseNumber());
+	        physio.setSpeciality(data.speciality());
+	        return physioRepository.save(physio);
+	    }
 }
