@@ -1,5 +1,7 @@
 package com.myapp.eletronic_physio_record.entities;
 
+import java.util.List;
+
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import jakarta.persistence.Column;
@@ -8,6 +10,8 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
+import jakarta.persistence.JoinTable;
+import jakarta.persistence.ManyToMany;
 import jakarta.persistence.OneToOne;
 import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
@@ -32,6 +36,14 @@ public class Physio {
 	@OneToOne
 	@JoinColumn(name = "user_id", nullable = false)
 	private User user;
+	
+	@ManyToMany
+    @JoinTable(
+        name = "physio_patients",
+        joinColumns = @JoinColumn(name = "physio_id"),
+        inverseJoinColumns = @JoinColumn(name = "patient_id")
+    )
+    private List<Patient> patients;
 	
 	public User getUser() {
 		return user;
