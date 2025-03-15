@@ -48,6 +48,10 @@ public class Physio {
 	public User getUser() {
 		return user;
 	}
+	
+	public Long getId() {
+		return id;
+	}
 
 	public void setUser(User user) {
 		this.user = user;
