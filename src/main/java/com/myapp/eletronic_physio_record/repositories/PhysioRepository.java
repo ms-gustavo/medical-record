@@ -7,4 +7,5 @@ import com.myapp.eletronic_physio_record.entities.Physio;
 
 @Repository
 public interface PhysioRepository extends JpaRepository<Physio, Long> {
+	Physio findByEmail(String email);
 }

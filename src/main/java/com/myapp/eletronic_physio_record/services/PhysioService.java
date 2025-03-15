@@ -44,6 +44,7 @@ public class PhysioService {
 		physio.setName(data.name());
 		physio.setLicenseNumber(data.licenseNumber());
 		physio.setSpeciality(data.speciality());
+		physio.setEmail(user.getUsername());
 		physio.setUser(user);
 		
 		return physioRepository.save(physio);

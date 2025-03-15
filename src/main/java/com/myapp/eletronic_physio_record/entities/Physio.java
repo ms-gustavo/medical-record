@@ -31,6 +31,8 @@ public class Physio {
 	private String speciality;
 	@Column(nullable = false, unique = true)
 	private String licenseNumber;
+	@Column(nullable = false, unique = true)
+    private String email;
 	
 	@JsonIgnore
 	@OneToOne
@@ -71,6 +73,14 @@ public class Physio {
 
 	public void setLicenseNumber(String licenseNumber) {
 	    this.licenseNumber = licenseNumber;
+	}
+	
+	public String getEmail() {
+	    return email;
+	}
+
+	public void setEmail(String email) {
+	    this.email = email;
 	}
 	
 	public String getSpeciality() {
