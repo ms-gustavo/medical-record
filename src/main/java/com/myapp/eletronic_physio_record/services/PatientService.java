@@ -27,6 +27,10 @@ public class PatientService {
 	private TokenService tokenService;
 
 	
+	public Patient findById(Long id) {
+		return patientRepository.findById(id).orElseThrow(() -> new RuntimeException("Patient not found"));
+	}
+	
 	@Transactional
 	public Patient createPatient(PatientDTO data, String token) {
 		String email = tokenService.validateToken(token);
