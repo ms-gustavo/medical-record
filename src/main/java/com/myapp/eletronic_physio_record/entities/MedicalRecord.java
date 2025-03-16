@@ -19,8 +19,6 @@ import lombok.Setter;
 
 @Entity
 @Table(name = "medical_record")
-@Getter
-@Setter
 @NoArgsConstructor
 @AllArgsConstructor
 public class MedicalRecord {
@@ -41,4 +39,46 @@ public class MedicalRecord {
 	
 	@OneToMany(mappedBy = "medicalRecord", cascade = CascadeType.ALL)
 	private List<TreatmentSession> treatmentSessions;
+
+	public Long getId() {
+		return id;
+	}
+
+	public void setId(Long id) {
+		this.id = id;
+	}
+
+	public String getStartDate() {
+		return startDate;
+	}
+
+	public void setStartDate(String startDate) {
+		this.startDate = startDate;
+	}
+
+	public String getDiagnostic() {
+		return diagnostic;
+	}
+
+	public void setDiagnostic(String diagnostic) {
+		this.diagnostic = diagnostic;
+	}
+
+	public Patient getPatient() {
+		return patient;
+	}
+
+	public void setPatient(Patient patient) {
+		this.patient = patient;
+	}
+
+	public List<TreatmentSession> getTreatmentSessions() {
+		return treatmentSessions;
+	}
+
+	public void setTreatmentSessions(List<TreatmentSession> treatmentSessions) {
+		this.treatmentSessions = treatmentSessions;
+	}
+	
+	
 }
