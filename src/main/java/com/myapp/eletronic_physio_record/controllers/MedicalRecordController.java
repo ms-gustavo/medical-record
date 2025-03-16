@@ -1,5 +1,7 @@
 package com.myapp.eletronic_physio_record.controllers;
 
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -32,7 +34,8 @@ public class MedicalRecordController {
 	}
 	
 	@GetMapping("/{id}")
-	public ResponseEntity<MedicalRecord> findById(@PathVariable Long id){
-		return ResponseEntity.ok(medicalRecordService.findById(id));
+	public ResponseEntity<List<MedicalRecord>> findById(@PathVariable Long id,@RequestHeader("Authorization") String token){
+		token = token.replace("Bearer ", "");
+		return ResponseEntity.ok(medicalRecordService.findByPatient(id, token));
 	}
 }

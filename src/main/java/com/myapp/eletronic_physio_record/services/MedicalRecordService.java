@@ -1,5 +1,7 @@
 package com.myapp.eletronic_physio_record.services;
 
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -46,8 +48,17 @@ public class MedicalRecordService {
 		
 	}
 	
-	public MedicalRecord findById(Long id) {
-		return medicalRecordRepository.findById(id).orElseThrow(() -> new RuntimeException("Medical Record not found"));
+	public List<MedicalRecord> findByPatient(Long patientId, String token) {
+		String email = tokenService.validateToken(token);
+		Physio physio = physioRepository.findByEmail(email);
+		if (physio == null) throw new RuntimeException("Physio not found");
+		
+		Patient patient = patientRepository.findById(patientId).orElseThrow(() -> new RuntimeException("Patient not found"));
+		
+		if(!patient.getPhysios().contains(physio)) throw new RuntimeException("You have no permission to access this patient's medical record");
+		
+		
+		return medicalRecordRepository.findByPatientId(patientId);
 	}
 	
 }
