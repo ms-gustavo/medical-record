@@ -44,7 +44,10 @@ public class MedicalRecordService {
 		
 		return medicalRecordRepository.save(newMedicalRecord);
 		
+	}
 	
+	public MedicalRecord findById(Long id) {
+		return medicalRecordRepository.findById(id).orElseThrow(() -> new RuntimeException("Medical Record not found"));
 	}
 	
 }

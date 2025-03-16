@@ -3,6 +3,8 @@ package com.myapp.eletronic_physio_record.controllers;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestHeader;
@@ -27,5 +29,10 @@ public class MedicalRecordController {
 	public ResponseEntity<MedicalRecord> createMedicalRecord(@RequestBody MedicalRecordDTO data, @RequestHeader("Authorization") String token) {
 		token = token.replace("Bearer ", "");
         return ResponseEntity.status(HttpStatus.CREATED).body(medicalRecordService.createMedicalRecord(data, token));
+	}
+	
+	@GetMapping("/{id}")
+	public ResponseEntity<MedicalRecord> findById(@PathVariable Long id){
+		return ResponseEntity.ok(medicalRecordService.findById(id));
 	}
 }
