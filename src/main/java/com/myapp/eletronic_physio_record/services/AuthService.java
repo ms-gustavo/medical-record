@@ -45,14 +45,14 @@ public class AuthService implements UserDetailsService {
         return tokenService.generateToken((User) authentication.getPrincipal());
     }
     
-    public void register(RegisterDTO data) {
+    public User register(RegisterDTO data) {
     	UserDetails user = userRepository.findByEmail(data.email());
     	if (user != null) {
             throw new IllegalArgumentException("User already exists");
         }
     	String encryptedPassword = passwordEncoder.encode(data.password());
     	User newUser = new User(data.email(), encryptedPassword, data.role());
-        userRepository.save(newUser);
+        return userRepository.save(newUser);
     }
     
 }

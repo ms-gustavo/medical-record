@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.myapp.eletronic_physio_record.entities.User;
 import com.myapp.eletronic_physio_record.repositories.UserRepository;
+import com.myapp.eletronic_physio_record.services.UserService;
 
 import lombok.RequiredArgsConstructor;
 
@@ -22,17 +23,17 @@ public class UserController {
 	
 	@Autowired
 	UserRepository userRepository;
+	@Autowired
+	UserService userService;
 	
 	@GetMapping
 	public ResponseEntity<List<User>> listUsers(){
-		return ResponseEntity.ok(userRepository.findAll());
+		return ResponseEntity.ok(userService.findAll());
 	}
 	
 	@DeleteMapping("/{id}")
 	public ResponseEntity<Void> deleteUser(@PathVariable Long id){
-		if (!userRepository.existsById(id)) return ResponseEntity.notFound().build();
-		
-		userRepository.deleteById(id);
+		userService.delete(id);
 		return ResponseEntity.noContent().build();
 	}
 	
