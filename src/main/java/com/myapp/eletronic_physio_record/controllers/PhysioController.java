@@ -3,6 +3,7 @@ package com.myapp.eletronic_physio_record.controllers;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
@@ -25,6 +26,12 @@ public class PhysioController {
 	@Autowired
 	private PhysioService physioService;
 
+	
+	@GetMapping("/{id}")
+	public ResponseEntity<Physio> findById(@PathVariable Long id){
+		return ResponseEntity.ok(physioService.findById(id));
+	}
+	
 	@PostMapping
 	public ResponseEntity<Physio> create(@RequestBody PhysioDTO data, @RequestHeader("Authorization") String token) {
 		token = token.replace("Bearer ", "");
