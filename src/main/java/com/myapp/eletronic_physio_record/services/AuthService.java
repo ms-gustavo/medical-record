@@ -34,7 +34,7 @@ public class AuthService implements UserDetailsService {
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
         UserDetails user = userRepository.findByEmail(username);
         if (user == null) {
-            throw new UsernameNotFoundException("Email not found");
+            throw new UsernameNotFoundException("Email não encontrado!");
         }
         return user;
     }
@@ -48,7 +48,7 @@ public class AuthService implements UserDetailsService {
     public User register(RegisterDTO data) {
     	UserDetails user = userRepository.findByEmail(data.email());
     	if (user != null) {
-            throw new IllegalArgumentException("User already exists");
+            throw new IllegalArgumentException("Usuário existente!");
         }
     	String encryptedPassword = passwordEncoder.encode(data.password());
     	User newUser = new User(data.email(), encryptedPassword, data.role());

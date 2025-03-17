@@ -12,6 +12,7 @@ import com.myapp.eletronic_physio_record.repositories.PhysioRepository;
 import com.myapp.eletronic_physio_record.repositories.UserRepository;
 import com.myapp.eletronic_physio_record.security.TokenService;
 
+import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 
 @Service
@@ -31,14 +32,14 @@ public class PhysioService {
 	
 	public Physio findById(Long id) {
 		return physioRepository.findById(id)
-				.orElseThrow(() -> new RuntimeException("Physiotherapist not found"));
+				.orElseThrow(() -> new EntityNotFoundException("Fisioterapeuta não encontrado"));
 	}
 	
 	public Physio create(PhysioDTO data, String token) {
 		String email = tokenService.validateToken(token);
 	    User user = (User) userRepository.findByEmail(email);
 	    if (user == null) {
-	        throw new RuntimeException("Usuário não encontrado");
+	        throw new EntityNotFoundException("Usuário não encontrado");
 	    }
 		Physio physio = new Physio();
 		physio.setName(data.name());

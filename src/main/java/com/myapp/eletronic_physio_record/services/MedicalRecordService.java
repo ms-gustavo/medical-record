@@ -3,6 +3,7 @@ package com.myapp.eletronic_physio_record.services;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.access.AccessDeniedException;
 import org.springframework.stereotype.Service;
 
 import com.myapp.eletronic_physio_record.entities.MedicalRecord;
@@ -14,6 +15,7 @@ import com.myapp.eletronic_physio_record.repositories.PatientRepository;
 import com.myapp.eletronic_physio_record.repositories.PhysioRepository;
 import com.myapp.eletronic_physio_record.security.TokenService;
 
+import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 
 @Service
@@ -33,11 +35,11 @@ public class MedicalRecordService {
 	public MedicalRecord createMedicalRecord(MedicalRecordDTO data, String token) {
 		String email = tokenService.validateToken(token);
 		Physio physio = (Physio) physioRepository.findByEmail(email);
-		if (physio == null) throw new RuntimeException("Physio not found");
+		if (physio == null) throw new EntityNotFoundException("Fisioterapeuta não encontrado");
 		
-		Patient patient = (Patient) patientRepository.findById(data.patientId()).orElseThrow(() -> new RuntimeException("Patient not found"));
+		Patient patient = (Patient) patientRepository.findById(data.patientId()).orElseThrow(() -> new EntityNotFoundException("Paciente não encontrado"));
 	
-		if (!patient.getPhysios().contains(physio)) throw new RuntimeException("You have no permission to create a medical record for this patient");
+		if (!patient.getPhysios().contains(physio)) throw new AccessDeniedException("Você não tem permissão para acessar este paciente.");
 		
 		MedicalRecord newMedicalRecord = new MedicalRecord();
 		newMedicalRecord.setPatient(patient);
@@ -51,11 +53,11 @@ public class MedicalRecordService {
 	public List<MedicalRecord> findByPatient(Long patientId, String token) {
 		String email = tokenService.validateToken(token);
 		Physio physio = physioRepository.findByEmail(email);
-		if (physio == null) throw new RuntimeException("Physio not found");
+		if (physio == null) throw new EntityNotFoundException("Fisioterapeuta não encontrado");
 		
-		Patient patient = patientRepository.findById(patientId).orElseThrow(() -> new RuntimeException("Patient not found"));
+		Patient patient = patientRepository.findById(patientId).orElseThrow(() -> new EntityNotFoundException("Paciente não encontrado"));
 		
-		if(!patient.getPhysios().contains(physio)) throw new RuntimeException("You have no permission to access this patient's medical record");
+		if(!patient.getPhysios().contains(physio)) throw new AccessDeniedException("Você não tem permissão para acessar este paciente.");
 		
 		
 		return medicalRecordRepository.findByPatientId(patientId);
