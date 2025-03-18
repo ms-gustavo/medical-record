@@ -10,6 +10,9 @@ import com.myapp.eletronic_physio_record.entities.MedicalRecord;
 import com.myapp.eletronic_physio_record.entities.Patient;
 import com.myapp.eletronic_physio_record.entities.Physio;
 import com.myapp.eletronic_physio_record.entities.dto.MedicalRecordDTO;
+import com.myapp.eletronic_physio_record.entities.dto.MedicalRecordResponseDTO;
+import com.myapp.eletronic_physio_record.entities.dto.PatientBasicResponseDTO;
+import com.myapp.eletronic_physio_record.entities.dto.TreatmentSessionDTO;
 import com.myapp.eletronic_physio_record.repositories.MedicalRecordRepository;
 import com.myapp.eletronic_physio_record.repositories.PatientRepository;
 import com.myapp.eletronic_physio_record.repositories.PhysioRepository;
@@ -32,7 +35,7 @@ public class MedicalRecordService {
 	@Autowired
 	private TokenService tokenService;
 	
-	public MedicalRecord createMedicalRecord(MedicalRecordDTO data, String token) {
+	public MedicalRecordResponseDTO createMedicalRecord(MedicalRecordDTO data, String token) {
 		String email = tokenService.validateToken(token);
 		Physio physio = (Physio) physioRepository.findByEmail(email);
 		if (physio == null) throw new EntityNotFoundException("Fisioterapeuta não encontrado");
@@ -46,11 +49,24 @@ public class MedicalRecordService {
 		newMedicalRecord.setStartDate(data.startDate());
 		newMedicalRecord.setDiagnostic(data.diagnostic());
 		
-		return medicalRecordRepository.save(newMedicalRecord);
+		newMedicalRecord = medicalRecordRepository.save(newMedicalRecord);
+		
+		return new MedicalRecordResponseDTO(
+				newMedicalRecord.getId(),
+				newMedicalRecord.getStartDate(),
+				newMedicalRecord.getDiagnostic(),
+				new PatientBasicResponseDTO(
+						patient.getId(),
+						patient.getName(),
+						patient.getBirthDate(),
+						patient.getPhone(),
+						patient.getAddress()
+						),
+				null);
 		
 	}
 	
-	public List<MedicalRecord> findByPatient(Long patientId, String token) {
+	public List<MedicalRecordResponseDTO> findByPatient(Long patientId, String token) {
 		String email = tokenService.validateToken(token);
 		Physio physio = physioRepository.findByEmail(email);
 		if (physio == null) throw new EntityNotFoundException("Fisioterapeuta não encontrado");
@@ -60,7 +76,26 @@ public class MedicalRecordService {
 		if(!patient.getPhysios().contains(physio)) throw new AccessDeniedException("Você não tem permissão para acessar este paciente.");
 		
 		
-		return medicalRecordRepository.findByPatientId(patientId);
+		List<MedicalRecord> records = medicalRecordRepository.findByPatientId(patientId);
+		
+		return records.stream().map(record -> new MedicalRecordResponseDTO(
+		        record.getId(),
+		        record.getStartDate(),
+		        record.getDiagnostic(),
+		        new PatientBasicResponseDTO(
+		            record.getPatient().getId(),
+		            record.getPatient().getName(),
+		            record.getPatient().getBirthDate(),
+		            record.getPatient().getPhone(),
+		            record.getPatient().getAddress()
+		        ),
+		        record.getTreatmentSessions().stream().map(session -> new TreatmentSessionDTO(
+		            session.getId(),
+		            session.getSessionDate(),
+		            session.getObservations(),
+		            session.getProcedures()
+		        )).toList()
+		    )).toList();
 	}
 	
 }

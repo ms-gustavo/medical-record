@@ -43,6 +43,8 @@ public class Physio {
 	@OneToOne
 	@JoinColumn(name = "user_id", nullable = false)
 	private User user;
+	
+	@JsonIgnore
 	@ManyToMany
 	@JoinTable(name = "physio_patients", joinColumns = @JoinColumn(name = "physio_id"), inverseJoinColumns = @JoinColumn(name = "patient_id"))
 	private List<Patient> patients = new ArrayList<>();

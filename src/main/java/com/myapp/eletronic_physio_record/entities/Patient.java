@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.fasterxml.jackson.annotation.JsonIdentityInfo;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 
 import jakarta.persistence.CascadeType;
@@ -44,7 +45,9 @@ public class Patient {
 
 	@Column
 	private String address;
+	
 	@ManyToMany(mappedBy = "patients")
+	@JsonIgnore
 	private List<Physio> physios = new ArrayList<>();
 
 	@OneToMany(mappedBy = "patient", cascade = CascadeType.ALL)
@@ -53,7 +56,7 @@ public class Patient {
 	public Long getId() {
 		return id;
 	}
-	
+
 	public String getName() {
 		return name;
 	}

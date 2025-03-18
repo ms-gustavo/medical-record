@@ -16,6 +16,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.myapp.eletronic_physio_record.entities.MedicalRecord;
 import com.myapp.eletronic_physio_record.entities.dto.MedicalRecordDTO;
+import com.myapp.eletronic_physio_record.entities.dto.MedicalRecordResponseDTO;
 import com.myapp.eletronic_physio_record.services.MedicalRecordService;
 
 import jakarta.validation.Valid;
@@ -31,13 +32,13 @@ public class MedicalRecordController {
 	private MedicalRecordService medicalRecordService;
 	
 	@PostMapping
-	public ResponseEntity<MedicalRecord> createMedicalRecord(@Valid @RequestBody MedicalRecordDTO data, @RequestHeader("Authorization") String token) {
+	public ResponseEntity<MedicalRecordResponseDTO> createMedicalRecord(@Valid @RequestBody MedicalRecordDTO data, @RequestHeader("Authorization") String token) {
 		token = token.replace("Bearer ", "");
         return ResponseEntity.status(HttpStatus.CREATED).body(medicalRecordService.createMedicalRecord(data, token));
 	}
 	
 	@GetMapping("/{id}")
-	public ResponseEntity<List<MedicalRecord>> findById(@PathVariable Long id,@RequestHeader("Authorization") String token){
+	public ResponseEntity<List<MedicalRecordResponseDTO>> findByPatient(@PathVariable Long id,@RequestHeader("Authorization") String token){
 		token = token.replace("Bearer ", "");
 		return ResponseEntity.ok(medicalRecordService.findByPatient(id, token));
 	}
